@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Sample</title>
+	<script type="text/javascript">
+		var request = new XMLHttpRequest();
+		request.onload = new function(){
+			console.log(this.responseText);
+		}
+		request.open("GET", "https://librivox.org/api/feed/audiobooks/?title=^pride&format=json", true);
+		request.send();
+	</script>
+</head>
+<body>
+
+</body>
+</html>
