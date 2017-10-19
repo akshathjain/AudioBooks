@@ -8,7 +8,6 @@ Purpose: Audio player fragment
 
 import android.app.Fragment;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +16,8 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+
+import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
 
 public class AudioPlayer extends Fragment {
     private AudioBook book;
@@ -29,9 +30,8 @@ public class AudioPlayer extends Fragment {
     private ImageView thumbnail;
     private boolean isMusicPlaying = false;
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.fragment_audio_player, container, false);
 
         playPause = layout.findViewById(R.id.track_play_pause);
@@ -48,7 +48,8 @@ public class AudioPlayer extends Fragment {
 
         //set book information
         title.setText(book.getTitle()); //bind title
-        Glide.with(this).load(book.getThumbnailURL()).into(thumbnail); //bind thumbnail
+        Glide.with(this).load(book.getThumbnailURL()).transition(withCrossFade()).into(thumbnail); //bind thumbnail
+
 
         setupOnClickListeners();
 
