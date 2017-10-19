@@ -12,8 +12,11 @@ public class AudioBook {
     private JSONObject bookReference;
     private String title;
     private String author;
+    private String baseURL;
 
     public AudioBook(JSONObject o){
         bookReference = o;
     }
+
+
 }
