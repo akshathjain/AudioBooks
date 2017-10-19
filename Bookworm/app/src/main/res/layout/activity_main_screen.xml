@@ -8,10 +8,10 @@
     android:layout_height="match_parent"
     tools:context="com.akshathjain.bookworm.MainScreen">
 
-    <Button
+    <!--<Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="OPEN PLAYER"
-        android:onClick="openPlayer"/>
+        android:onClick="openPlayer"/>-->
 
 </RelativeLayout>

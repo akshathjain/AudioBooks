@@ -2,10 +2,11 @@ package com.akshathjain.bookworm;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.akshathjain.bookworm.async.QueryFinished;
+import com.akshathjain.bookworm.async.QueryRetriever;
+
+import java.util.ArrayList;
 
 public class MainScreen extends AppCompatActivity {
 
@@ -13,21 +14,20 @@ public class MainScreen extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_screen);
+        openPlayer();
     }
 
-    public void openPlayer(View view) {
+    public void openPlayer() {
         QueryRetriever retriever = new QueryRetriever();
-        retriever.addOnCompleted(new QueryFinished<JSONObject[]>() {
+        retriever.addOnCompleted(new QueryFinished<ArrayList<AudioBook>>() {
             @Override
-            public void onQueryFinished(JSONObject[] o) {
-               /* try {
-                    System.out.println(o[0].toString(4));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }*/
-
+            public void onQueryFinished(ArrayList<AudioBook> o) {
                 android.app.FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
                 AudioPlayer frag = new AudioPlayer();
+                Bundle b = new Bundle();
+                b.putSerializable("AUDIO_BOOK", o.get(0));
+                frag.setArguments(b);
+
                 fragmentTransaction.add(R.id.fragment_container, frag);
                 fragmentTransaction.commit();
             }

@@ -1,6 +1,8 @@
-package com.akshathjain.bookworm;
+package com.akshathjain.bookworm.async;
 
 import android.os.AsyncTask;
+
+import com.akshathjain.bookworm.AudioBook;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -9,7 +11,6 @@ import org.json.JSONObject;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Scanner;
 
@@ -17,11 +18,11 @@ import java.util.Scanner;
  * Created by Akshath on 10/18/2017.
  */
 
-public class QueryRetriever extends AsyncTask<String, Void, JSONObject[]> {
+public class QueryRetriever extends AsyncTask<String, Void, ArrayList<AudioBook>> {
     private QueryFinished callback;
 
     @Override
-    protected JSONObject[] doInBackground(String... searchTerm) {
+    protected ArrayList<AudioBook> doInBackground(String... searchTerm) {
         try {
             ArrayList<AudioBook> books = new ArrayList<>();
 
@@ -29,16 +30,20 @@ public class QueryRetriever extends AsyncTask<String, Void, JSONObject[]> {
             Iterator<String> keys = librivox.keys();
             while (keys.hasNext()) {
                 JSONObject bookData = librivox.getJSONObject(keys.next());
+                AudioBook currentBook = new AudioBook();
 
-                AudioBook currentBook = new AudioBook(bookData.getString("title"));
+                //set title
+                currentBook.setTitle(bookData.optString("title"));
 
-                String[] iarchive = bookData.optString("url_iarchive", "").split("/");
-                String urlIdentifier = iarchive[iarchive.length - 1];
-                String baseURL = "http://archive.org/metadata/" + urlIdentifier;
+                //set authors
+                currentBook.setAuthor(bookData.optJSONArray("authors").optJSONObject(0).optString("first_name") + " " + bookData.optJSONArray("authors").optJSONObject(0).optString("last_name"));
 
+                //set chapters url and thumbnail url
+                String iarchive = bookData.optString("url_iarchive").substring(bookData.optString("url_iarchive").lastIndexOf("/"));
+                currentBook.setChaptersURL("http://archive.org/metadata/" + iarchive + "/files");
+                currentBook.setThumbnailURL("https://archive.org/services/img/"+ iarchive);
 
-                JSONArray iarchiveData = new JSONObject(getWebData(baseURL)).getJSONArray("files");
-                System.out.println(iarchiveData.toString(2));
+                /*JSONArray iarchiveData = new JSONObject(getWebData(baseURL)).getJSONArray("result");
                 for(int i = 0; i < iarchiveData.length(); i++){
                     JSONObject current = iarchiveData.getJSONObject(i);
                     if(current.getString("source").equals("original") && current.getString("format").toLowerCase().contains("mp3")){
@@ -46,14 +51,12 @@ public class QueryRetriever extends AsyncTask<String, Void, JSONObject[]> {
                     }else if(current.getString("format").toLowerCase().contains("thumb")){
                         currentBook.setThumbnailURL("https://archive.org/details/" + urlIdentifier + "/" + current.getString("name"));
                     }
-                }
+                }*/
 
                 books.add(currentBook);
             }
 
-            System.out.println(books);
-
-            return new JSONObject[]{new JSONObject(getWebData(searchTerm[0]))};
+            return books;
         } catch (JSONException e) {
             e.printStackTrace();
             return null;
@@ -62,7 +65,7 @@ public class QueryRetriever extends AsyncTask<String, Void, JSONObject[]> {
     }
 
     @Override
-    protected void onPostExecute(JSONObject[] result) {
+    protected void onPostExecute(ArrayList<AudioBook> result) {
         super.onPostExecute(result);
         callback.onQueryFinished(result);
     }
@@ -89,9 +92,5 @@ public class QueryRetriever extends AsyncTask<String, Void, JSONObject[]> {
             return null;
         }
     }
-}
-
-interface QueryFinished<T> {
-    void onQueryFinished(T t);
 }
 

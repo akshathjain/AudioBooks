@@ -14,12 +14,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.SeekBar;
+import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
 
 public class AudioPlayer extends Fragment {
+    private AudioBook book;
     private ImageView playPause;
     private ImageView trackNext;
     private ImageView trackPrevious;
     private SeekBar seekBar;
+    private TextView title;
+    private TextView chapter;
+    private ImageView thumbnail;
     private boolean isMusicPlaying = false;
 
     @Nullable
@@ -27,10 +34,21 @@ public class AudioPlayer extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.fragment_audio_player, container, false);
 
-        playPause = (ImageView) layout.findViewById(R.id.track_play_pause);
-        trackNext = (ImageView) layout.findViewById(R.id.track_next);
-        trackPrevious = (ImageView) layout.findViewById(R.id.track_previous);
-        seekBar = (SeekBar) layout.findViewById(R.id.track_seekbar);
+        playPause = layout.findViewById(R.id.track_play_pause);
+        trackNext = layout.findViewById(R.id.track_next);
+        trackPrevious = layout.findViewById(R.id.track_previous);
+        seekBar = layout.findViewById(R.id.track_seekbar);
+        title = layout.findViewById(R.id.track_title);
+        chapter = layout.findViewById(R.id.track_chapter);
+        thumbnail = layout.findViewById(R.id.track_thumbnail);
+
+        //get the book information
+        Bundle args = getArguments();
+        this.book = (AudioBook) args.getSerializable("AUDIO_BOOK");
+
+        //set book information
+        title.setText(book.getTitle()); //bind title
+        Glide.with(this).load(book.getThumbnailURL()).into(thumbnail); //bind thumbnail
 
         setupOnClickListeners();
 
