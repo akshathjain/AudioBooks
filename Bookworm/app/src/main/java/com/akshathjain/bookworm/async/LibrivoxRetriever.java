@@ -2,18 +2,14 @@ package com.akshathjain.bookworm.async;
 
 import android.os.AsyncTask;
 
-import com.akshathjain.bookworm.AudioBook;
+import com.akshathjain.bookworm.generic.AudioBook;
 import com.akshathjain.bookworm.utils.Web;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Scanner;
 
 /**
  * Created by Akshath on 10/18/2017.

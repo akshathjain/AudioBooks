@@ -1,4 +1,4 @@
-package com.akshathjain.bookworm;
+package com.akshathjain.bookworm.fragments;
 
 /*
 Name: Akshath Jain
@@ -17,6 +17,8 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.akshathjain.bookworm.generic.AudioBook;
+import com.akshathjain.bookworm.R;
 import com.akshathjain.bookworm.async.ArchiveRetriever;
 import com.akshathjain.bookworm.async.QueryFinished;
 import com.bumptech.glide.Glide;

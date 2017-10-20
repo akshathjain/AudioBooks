@@ -2,14 +2,11 @@ package com.akshathjain.bookworm.async;
 
 import android.os.AsyncTask;
 
-import com.akshathjain.bookworm.AudioBook;
+import com.akshathjain.bookworm.generic.AudioBook;
 import com.akshathjain.bookworm.utils.Web;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.ArrayList;
 
 /**
  * Name: Akshath Jain
