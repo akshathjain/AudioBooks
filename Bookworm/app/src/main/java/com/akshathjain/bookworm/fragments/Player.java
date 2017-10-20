@@ -122,24 +122,22 @@ public class Player extends Fragment {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if(mediaPlayer != null && mediaPlayer.isPlaying()){
-                    seekBar.setProgress((int)(mediaPlayer.getCurrentPosition() / 500.0));
+                if(mediaPlayer != null && isMusicPlaying){
+                    seekBar.setProgress((int)(mediaPlayer.getCurrentPosition() / 1000.0));
                 }
-                handler.postDelayed(this, 500);
+                handler.postDelayed(this, 1000);
             }
         });
 
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            private boolean userTouched = false;
             @Override
-            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                if(userTouched) {
-                    if(mediaPlayer != null) {
+            public void onProgressChanged(SeekBar seekBar, int i, boolean fromUser) {
+                if(fromUser) {
+                    if (mediaPlayer != null) {
                         playPauseMusic();
                         mediaPlayer.seekTo(i * 1000);
                         playPauseMusic();
                     }
-                    userTouched = false;
                 }
             }
 
@@ -150,7 +148,7 @@ public class Player extends Fragment {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                userTouched = true;
+
             }
         });
     }
