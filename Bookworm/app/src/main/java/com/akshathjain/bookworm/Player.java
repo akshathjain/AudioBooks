@@ -34,6 +34,7 @@ public class Player extends Fragment {
     private ImageView thumbnail;
     private boolean isMusicPlaying = false;
     private MediaPlayer mediaPlayer;
+    private Chapter currentChapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -54,7 +55,8 @@ public class Player extends Fragment {
         streamGetter.addOnCompleted(new QueryFinished<Void>() {
             @Override
             public void onQueryFinished(Void aVoid) {
-                setupMediaPlayer(book.getCurrentChapter().getUrl());
+                currentChapter = book.getCurrentChapter();
+                setupMediaPlayer(currentChapter.getUrl());
             }
         });
         streamGetter.execute(book.getChaptersURL());
@@ -83,7 +85,7 @@ public class Player extends Fragment {
         try {
             mediaPlayer = new MediaPlayer();
             mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-            mediaPlayer.setDataSource("http://ia802602.us.archive.org/9/items/pride_and_prejudice_librivox/prideandprejudice_01-03_austen_64kb.mp3");
+            mediaPlayer.setDataSource(url);
             mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                 @Override
                 public void onPrepared(MediaPlayer mp) {
