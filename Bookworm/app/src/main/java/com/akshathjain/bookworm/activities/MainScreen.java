@@ -1,8 +1,11 @@
-package com.akshathjain.bookworm;
+package com.akshathjain.bookworm.activities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import com.akshathjain.bookworm.generic.AudioBook;
+import com.akshathjain.bookworm.fragments.Player;
+import com.akshathjain.bookworm.R;
 import com.akshathjain.bookworm.async.QueryFinished;
 import com.akshathjain.bookworm.async.LibrivoxRetriever;
 
