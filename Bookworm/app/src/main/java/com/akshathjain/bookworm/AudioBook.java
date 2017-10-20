@@ -21,6 +21,8 @@ public class AudioBook implements Serializable {
     private String chaptersURL;
     private String thumbnailURL;
     private ArrayList<Chapter> chapterList;
+    private int currentChapter = 0;
+    private boolean isSorted = false; //flag to indicate whether or not the chpater list needs sorting, set to false when a new element is added
 
     public AudioBook() {
         chapterList = new ArrayList<>();
@@ -32,7 +34,10 @@ public class AudioBook implements Serializable {
     }
 
     public ArrayList<Chapter> getChapterList() {
-        Collections.sort(chapterList);
+        if(!isSorted) {
+            Collections.sort(chapterList);
+            isSorted = true;
+        }
         return chapterList;
     }
 
@@ -58,6 +63,7 @@ public class AudioBook implements Serializable {
 
     public void addChapter(String title, String chapterURL, String track, String runtime) {
         chapterList.add(new Chapter(title, chapterURL, track, runtime));
+        isSorted = false;
     }
 
     public String getTitle() {
@@ -88,9 +94,42 @@ public class AudioBook implements Serializable {
         }
         return toReturn;
     }
+
+    //get previous chapter if in bounds
+    public Chapter getPreviousChapter(){
+        if(currentChapter > 0) {
+            currentChapter--;
+            return getChapterList().get(currentChapter);
+        }else
+            return null;
+    }
+
+    //method to get the url for the current chapter
+    public Chapter getCurrentChapter(){
+        return getChapterList().get(currentChapter);
+    }
+
+    //get next chapter if in bounds
+    public Chapter getNextChapter(){
+        if(currentChapter < chapterList.size() - 1){
+            currentChapter++;
+            return getChapterList().get(currentChapter);
+        }else
+            return null;
+    }
+
+    //get chapter if in bounds
+    public Chapter getChapter(int number){
+        if(number >= 0 && number <= chapterList.size() - 1){
+            currentChapter = number;
+            return getChapterList().get(currentChapter);
+        }else
+            return null;
+    }
+
 }
 
-class Chapter implements Comparable<Chapter> {
+class Chapter implements Comparable<Chapter>, Serializable {
     private String title;
     private String url;
     private int track;

@@ -4,11 +4,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.akshathjain.bookworm.async.QueryFinished;
-import com.akshathjain.bookworm.async.QueryRetriever;
+import com.akshathjain.bookworm.async.LibrivoxRetriever;
 
 import java.util.ArrayList;
 
-public class MainScreen extends AppCompatActivity {
+public class MainScreen extends AppCompatActivity{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,12 +18,12 @@ public class MainScreen extends AppCompatActivity {
     }
 
     public void openPlayer() {
-        QueryRetriever retriever = new QueryRetriever();
+        LibrivoxRetriever retriever = new LibrivoxRetriever();
         retriever.addOnCompleted(new QueryFinished<ArrayList<AudioBook>>() {
             @Override
             public void onQueryFinished(ArrayList<AudioBook> o) {
                 android.app.FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-                AudioPlayer frag = new AudioPlayer();
+                Player frag = new Player();
                 Bundle b = new Bundle();
                 b.putSerializable("AUDIO_BOOK", o.get(0));
                 frag.setArguments(b);
@@ -34,4 +34,6 @@ public class MainScreen extends AppCompatActivity {
         });
         retriever.execute("https://librivox.org/api/feed/audiobooks/?title=pride%20and%20prejudice&format=json&extended=1");
     }
+
+
 }
