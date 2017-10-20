@@ -14,16 +14,22 @@ public class Chapter implements Comparable<Chapter>, Serializable {
 
     public Chapter(String title, String url, String track, String runtime) {
         this.title = title;
-        this.url = url;
+        setUrl(url);
         this.track = Integer.parseInt(track.split("/")[0]);
         this.runtime = Double.parseDouble(runtime);
     }
 
     public Chapter(String title, String url, String track, double runtime) {
         this.title = title;
-        this.url = url;
+        setUrl(url);
         this.track = Integer.parseInt(track.split("/")[0]);
         this.runtime = runtime;
+    }
+
+    public void setUrl(String url) {
+        if(!url.contains("http://"))
+            url = "http://" + url;
+        this.url = url;
     }
 
     public String getTitle() {

@@ -30,7 +30,7 @@ public class ArchiveRetriever extends AsyncTask<String, Void, Void> {
             String base = iarchiveData.optString("d1") + iarchiveData.optString("dir");
 
             JSONArray files = iarchiveData.optJSONArray("files");
-            for (int i = 0; i < iarchiveData.length(); i++) {
+            for (int i = 0; i < files.length(); i++) {
                 JSONObject current = files.getJSONObject(i);
                 if (current.optString("source").equals("original") && current.optString("format").toLowerCase().contains("mp3")) {
                     reference.addChapter(current.optString("title"), base + "/" + current.optString("name"), current.optString("track"), current.optString("length"));
