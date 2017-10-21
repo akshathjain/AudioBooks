@@ -23,6 +23,7 @@ import com.akshathjain.bookworm.R;
 import com.akshathjain.bookworm.async.ArchiveRetriever;
 import com.akshathjain.bookworm.async.QueryFinished;
 import com.akshathjain.bookworm.generic.Chapter;
+import com.akshathjain.bookworm.utils.TimeConverter;
 import com.bumptech.glide.Glide;
 
 import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
@@ -34,8 +35,10 @@ public class Player extends Fragment {
     private ImageView trackPrevious;
     private SeekBar seekBar;
     private TextView title;
-    private TextView chapter;
+    private TextView subtitle;
     private ImageView thumbnail;
+    private TextView currentTime;
+    private TextView totalTime;
     private boolean isMusicPlaying = false;
     private MediaPlayer mediaPlayer;
     private Chapter currentChapter;
@@ -49,8 +52,10 @@ public class Player extends Fragment {
         trackPrevious = layout.findViewById(R.id.track_previous);
         seekBar = layout.findViewById(R.id.track_seekbar);
         title = layout.findViewById(R.id.track_title);
-        chapter = layout.findViewById(R.id.track_chapter);
+        subtitle = layout.findViewById(R.id.track_subtitle);
         thumbnail = layout.findViewById(R.id.track_thumbnail);
+        currentTime = layout.findViewById(R.id.track_current_time);
+        totalTime = layout.findViewById(R.id.track_total_time);
         mediaPlayer = new MediaPlayer();
 
         //get the book information and then get the chapter information
@@ -60,9 +65,8 @@ public class Player extends Fragment {
         streamGetter.addOnCompleted(new QueryFinished<Void>() {
             @Override
             public void onQueryFinished(Void aVoid) {
-                currentChapter = book.getCurrentChapter();
+                setChapter(book.getCurrentChapter());
                 setupSeekBar();
-                setupMediaPlayer(currentChapter.getUrl());
             }
         });
         streamGetter.execute(book.getChaptersURL());
@@ -104,6 +108,14 @@ public class Player extends Fragment {
         }
     }
 
+    private void setChapter(Chapter newChapter){
+        this.currentChapter = newChapter;
+        totalTime.setText(TimeConverter.format((int) currentChapter.getRuntime()));
+        subtitle.setText(currentChapter.getTitle());
+        seekBar.setProgress(0);
+        setupMediaPlayer(currentChapter.getUrl());
+    }
+
     //function to start playing music
     private void playPauseMusic() {
         isMusicPlaying = !isMusicPlaying;
@@ -116,23 +128,24 @@ public class Player extends Fragment {
         }
     }
 
-    private void setupSeekBar(){
+    private void setupSeekBar() {
         final Handler handler = new Handler();
-        seekBar.setMax((int)currentChapter.getRuntime());
+        seekBar.setMax((int) currentChapter.getRuntime());
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if(mediaPlayer != null && isMusicPlaying){
-                    seekBar.setProgress((int)(mediaPlayer.getCurrentPosition() / 1000.0));
+                if (mediaPlayer != null && isMusicPlaying) {
+                    seekBar.setProgress((int) (mediaPlayer.getCurrentPosition() / 1000.0));
                 }
-                handler.postDelayed(this, 1000);
+                handler.postDelayed(this, 500);
             }
         });
 
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean fromUser) {
-                if(fromUser) {
+                currentTime.setText(TimeConverter.format(i));
+                if (fromUser) {
                     if (mediaPlayer != null) {
                         playPauseMusic();
                         mediaPlayer.seekTo(i * 1000);
