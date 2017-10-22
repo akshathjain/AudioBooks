@@ -11,6 +11,7 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.design.widget.FloatingActionButton;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.akshathjain.bookworm.dialogs.ChapterPickerDialog;
 import com.akshathjain.bookworm.generic.AudioBook;
 import com.akshathjain.bookworm.R;
 import com.akshathjain.bookworm.async.ArchiveRetriever;
@@ -27,9 +29,11 @@ import com.akshathjain.bookworm.generic.Chapter;
 import com.akshathjain.bookworm.utils.TimeConverter;
 import com.bumptech.glide.Glide;
 
+import java.io.Serializable;
+
 import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
 
-public class Player extends Fragment implements MusicPlayer {
+public class Player extends Fragment implements MusicPlayer, Serializable {
     private AudioBook book;
     private ImageView playPause;
     private ImageView trackNext;
@@ -44,6 +48,7 @@ public class Player extends Fragment implements MusicPlayer {
     private boolean lockControls = false;
     private MediaPlayer mediaPlayer;
     private Chapter currentChapter;
+    private FloatingActionButton trackSelector;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -58,6 +63,7 @@ public class Player extends Fragment implements MusicPlayer {
         thumbnail = layout.findViewById(R.id.track_thumbnail);
         currentTime = layout.findViewById(R.id.track_current_time);
         totalTime = layout.findViewById(R.id.track_total_time);
+        trackSelector = layout.findViewById(R.id.track_fab);
         mediaPlayer = new MediaPlayer();
 
         //get the book information and then get the chapter information
@@ -104,6 +110,18 @@ public class Player extends Fragment implements MusicPlayer {
             @Override
             public void onClick(View view) {
                 previousTrack();
+            }
+        });
+
+        trackSelector.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ChapterPickerDialog dialog = new ChapterPickerDialog();
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("callback", Player.this);
+                bundle.putStringArray("chapterNames", book.getChapterNames());
+                dialog.setArguments(bundle);
+                dialog.show(getActivity().getFragmentManager(), "chapterPicker");
             }
         });
     }

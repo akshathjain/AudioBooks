@@ -37,6 +37,13 @@ public class AudioBook implements Serializable {
         return chapterList;
     }
 
+    public String[] getChapterNames(){
+        String[] toReturn = new String[getChapterList().size()];
+        for(int i = 0; i < toReturn.length; i++)
+            toReturn[i] = getChapterList().get(i).getTitle();
+        return toReturn;
+    }
+
     public void setTitle(String title) {
         this.title = title;
     }
