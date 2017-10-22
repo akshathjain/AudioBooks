@@ -7,16 +7,29 @@ Purpose: Audio player fragment
  */
 
 import android.app.Fragment;
+import android.graphics.Bitmap;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.media.PlaybackParams;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.graphics.Palette;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.SeekBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.akshathjain.bookworm.dialogs.ChapterPickerDialog;
@@ -26,10 +39,14 @@ import com.akshathjain.bookworm.async.ArchiveRetriever;
 import com.akshathjain.bookworm.interfaces.MusicPlayer;
 import com.akshathjain.bookworm.interfaces.QueryFinished;
 import com.akshathjain.bookworm.generic.Chapter;
+import com.akshathjain.bookworm.utils.Colors;
 import com.akshathjain.bookworm.utils.TimeConverter;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.bumptech.glide.request.transition.Transition;
 
 import java.io.Serializable;
+import java.lang.reflect.Array;
 
 import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
 
@@ -41,6 +58,7 @@ public class Player extends Fragment implements MusicPlayer, Serializable {
     private SeekBar seekBar;
     private TextView title;
     private TextView subtitle;
+    private TextView author;
     private ImageView thumbnail;
     private TextView currentTime;
     private TextView totalTime;
@@ -52,6 +70,8 @@ public class Player extends Fragment implements MusicPlayer, Serializable {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
+
         View layout = inflater.inflate(R.layout.fragment_audio_player, container, false);
 
         playPause = layout.findViewById(R.id.track_play_pause);
@@ -60,6 +80,7 @@ public class Player extends Fragment implements MusicPlayer, Serializable {
         seekBar = layout.findViewById(R.id.track_seekbar);
         title = layout.findViewById(R.id.track_title);
         subtitle = layout.findViewById(R.id.track_subtitle);
+        author = layout.findViewById(R.id.track_author);
         thumbnail = layout.findViewById(R.id.track_thumbnail);
         currentTime = layout.findViewById(R.id.track_current_time);
         totalTime = layout.findViewById(R.id.track_total_time);
@@ -81,12 +102,61 @@ public class Player extends Fragment implements MusicPlayer, Serializable {
 
         //set book information
         title.setText(book.getTitle()); //bind title
-        Glide.with(this).load(book.getThumbnailURL()).transition(withCrossFade()).into(thumbnail); //bind thumbnail
+        author.setText(book.getAuthor()); //bind author
+        //Glide.with(this).load(book.getThumbnailURL()).transition(withCrossFade()).into(thumbnail); //bind thumbnail
+        Glide.with(this)
+                .asBitmap()
+                .load(book.getThumbnailURL())
+                .into(new BitmapImageViewTarget(thumbnail) {
+                    @Override
+                    public void onResourceReady(Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                        super.onResourceReady(resource, transition);
+                        Colors.createPaletteAsync(resource, new Palette.PaletteAsyncListener() {
+                            @Override
+                            public void onGenerated(Palette palette) {
+                                System.out.println("generated palette");
+                                thumbnail.setBackgroundColor(palette.getMutedColor(0));
+                            }
+                        });
+                    }
+                });
 
         //setup onclick listeners
         setupOnClickListeners();
 
         return layout;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+
+        inflater.inflate(R.menu.player_menu, menu);
+        Spinner spinner = (Spinner) MenuItemCompat.getActionView(menu.findItem(R.id.playback_speed));
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.playback_speeds, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        //spinner.setSelection(3);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                System.out.println(i);
+
+               /* if (Build.VERSION.SDK_INT >= 23)
+                    mediaPlayer.setPlaybackParams(mediaPlayer.getPlaybackParams().setSpeed(2f));*/
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return super.onOptionsItemSelected(item);
     }
 
     //function to set up on click listeners
@@ -179,6 +249,12 @@ public class Player extends Fragment implements MusicPlayer, Serializable {
                 }
             });
             mediaPlayer.prepareAsync();
+            mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mediaPlayer) {
+                    nextTrack();
+                }
+            });
         } catch (Exception e) {
             e.printStackTrace();
             lockControls = false;

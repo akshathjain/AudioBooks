@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">Bookworm</string>
+    <string-array name="playback_speeds">
+        <item>0.25x</item>
+        <item>0.50x</item>
+        <item>0.75x</item>
+        <item>1.00x</item>
+        <item>1.50x</item>
+        <item>1.75x</item>
+        <item>2.00x</item>
+    </string-array>
 </resources>

@@ -11,6 +11,6 @@ import com.bumptech.glide.request.target.BitmapImageViewTarget;
 
 public class Colors {
     public static void createPaletteAsync(Bitmap b, Palette.PaletteAsyncListener finished){
-        Palette.from(b).generate(finished);
+        Palette.generateAsync(b, finished);
     }
 }

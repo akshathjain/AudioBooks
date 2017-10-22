@@ -14,8 +14,7 @@
             android:id="@+id/track_thumbnail"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="0.7"
-            android:background="@android:color/black" />
+            android:layout_weight="0.7"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -26,11 +25,21 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/track_author"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Author"
+                android:layout_marginBottom="2dp"
+                android:textSize="14sp"/>
+
+            <TextView
                 android:id="@+id/track_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="2dp"
+                android:layout_marginTop="2dp"
                 android:text="Title"
+                android:textStyle="bold"
                 android:textSize="16sp" />
 
             <TextView
@@ -84,7 +93,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.09"
                 android:gravity="end"
-                android:text="3:30"
+                android:text="0:00"
                 android:textAlignment="textEnd" />
         </LinearLayout>
 
@@ -129,8 +138,8 @@
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/track_fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
         android:layout_margin="16dp"
         android:clickable="true"
         app:layout_anchor="@id/track_thumbnail"
