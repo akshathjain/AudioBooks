@@ -1,4 +1,4 @@
-package com.akshathjain.bookworm.async;
+package com.akshathjain.bookworm.interfaces;
 
 /**
  * Created by Akshath on 10/19/2017.

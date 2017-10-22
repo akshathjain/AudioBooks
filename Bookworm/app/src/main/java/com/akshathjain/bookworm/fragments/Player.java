@@ -21,14 +21,15 @@ import android.widget.TextView;
 import com.akshathjain.bookworm.generic.AudioBook;
 import com.akshathjain.bookworm.R;
 import com.akshathjain.bookworm.async.ArchiveRetriever;
-import com.akshathjain.bookworm.async.QueryFinished;
+import com.akshathjain.bookworm.interfaces.MusicPlayer;
+import com.akshathjain.bookworm.interfaces.QueryFinished;
 import com.akshathjain.bookworm.generic.Chapter;
 import com.akshathjain.bookworm.utils.TimeConverter;
 import com.bumptech.glide.Glide;
 
 import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
 
-public class Player extends Fragment {
+public class Player extends Fragment implements MusicPlayer {
     private AudioBook book;
     private ImageView playPause;
     private ImageView trackNext;
@@ -40,6 +41,7 @@ public class Player extends Fragment {
     private TextView currentTime;
     private TextView totalTime;
     private boolean isMusicPlaying = false;
+    private boolean lockControls = false;
     private MediaPlayer mediaPlayer;
     private Chapter currentChapter;
 
@@ -86,7 +88,22 @@ public class Player extends Fragment {
         playPause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                playPauseMusic();
+                if (!lockControls)
+                    playPauseMusic();
+            }
+        });
+
+        trackNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                nextTrack();
+            }
+        });
+
+        trackPrevious.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                previousTrack();
             }
         });
     }
@@ -94,30 +111,35 @@ public class Player extends Fragment {
     //function to setup mediaplayer / wakelock functionality
     private void setupMediaPlayer(String url) {
         try {
+            lockControls = true;
+            mediaPlayer.reset();
             mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
             mediaPlayer.setDataSource(url);
             mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                 @Override
                 public void onPrepared(MediaPlayer mp) {
                     playPauseMusic();
+                    lockControls = false;
                 }
             });
             mediaPlayer.prepareAsync();
         } catch (Exception e) {
             e.printStackTrace();
+            lockControls = false;
         }
     }
 
-    private void setChapter(Chapter newChapter){
+    private void setChapter(Chapter newChapter) {
         this.currentChapter = newChapter;
         totalTime.setText(TimeConverter.format((int) currentChapter.getRuntime()));
         subtitle.setText(currentChapter.getTitle());
         seekBar.setProgress(0);
+        seekBar.setMax((int) currentChapter.getRuntime());
         setupMediaPlayer(currentChapter.getUrl());
     }
 
     //function to start playing music
-    private void playPauseMusic() {
+    public void playPauseMusic() {
         isMusicPlaying = !isMusicPlaying;
         if (isMusicPlaying) {
             playPause.setImageResource(R.drawable.ic_pause_black_24dp);
@@ -128,9 +150,35 @@ public class Player extends Fragment {
         }
     }
 
+    public void nextTrack() {
+        if (book.hasNextChapter()) {
+            setChapter(book.getNextChapter());
+            if (isMusicPlaying)
+                playPauseMusic();
+            setupMediaPlayer(currentChapter.getUrl());
+        }
+    }
+
+    public void previousTrack() {
+        if (book.hasPreviousChapter()) {
+            setChapter(book.getPreviousChapter());
+            if (isMusicPlaying)
+                playPauseMusic();
+            setupMediaPlayer(currentChapter.getUrl());
+        }
+    }
+
+    public void selectTrack(int track) {
+        if (book.hasChapter(track)) {
+            setChapter(book.getChapter(track));
+            if (isMusicPlaying)
+                playPauseMusic();
+            setupMediaPlayer(currentChapter.getUrl());
+        }
+    }
+
     private void setupSeekBar() {
         final Handler handler = new Handler();
-        seekBar.setMax((int) currentChapter.getRuntime());
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {

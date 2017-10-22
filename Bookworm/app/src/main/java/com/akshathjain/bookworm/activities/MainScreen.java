@@ -6,7 +6,7 @@ import android.os.Bundle;
 import com.akshathjain.bookworm.generic.AudioBook;
 import com.akshathjain.bookworm.fragments.Player;
 import com.akshathjain.bookworm.R;
-import com.akshathjain.bookworm.async.QueryFinished;
+import com.akshathjain.bookworm.interfaces.QueryFinished;
 import com.akshathjain.bookworm.async.LibrivoxRetriever;
 
 import java.util.ArrayList;

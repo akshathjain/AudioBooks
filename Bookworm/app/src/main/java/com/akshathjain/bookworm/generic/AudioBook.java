@@ -93,11 +93,15 @@ public class AudioBook implements Serializable {
 
     //get previous chapter if in bounds
     public Chapter getPreviousChapter(){
-        if(currentChapter > 0) {
+        if(hasPreviousChapter()) {
             currentChapter--;
             return getChapterList().get(currentChapter);
         }else
             return null;
+    }
+
+    public boolean hasPreviousChapter(){
+        return currentChapter > 0;
     }
 
     //method to get the url for the current chapter
@@ -107,20 +111,27 @@ public class AudioBook implements Serializable {
 
     //get next chapter if in bounds
     public Chapter getNextChapter(){
-        if(currentChapter < chapterList.size() - 1){
+        if(hasNextChapter()){
             currentChapter++;
             return getChapterList().get(currentChapter);
         }else
             return null;
     }
 
+    public boolean hasNextChapter(){
+        return currentChapter < chapterList.size() - 1;
+    }
+
     //get chapter if in bounds
     public Chapter getChapter(int number){
-        if(number >= 0 && number <= chapterList.size() - 1){
+        if(hasChapter(number)){
             currentChapter = number;
             return getChapterList().get(currentChapter);
         }else
             return null;
     }
 
+    public boolean hasChapter(int number){
+        return number >= 0 && number <= chapterList.size() - 1;
+    }
 }

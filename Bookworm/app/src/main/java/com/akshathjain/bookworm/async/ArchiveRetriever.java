@@ -3,6 +3,7 @@ package com.akshathjain.bookworm.async;
 import android.os.AsyncTask;
 
 import com.akshathjain.bookworm.generic.AudioBook;
+import com.akshathjain.bookworm.interfaces.QueryFinished;
 import com.akshathjain.bookworm.utils.Web;
 
 import org.json.JSONArray;
