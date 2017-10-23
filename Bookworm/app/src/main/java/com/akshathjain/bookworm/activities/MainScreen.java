@@ -31,7 +31,9 @@ public class MainScreen extends AppCompatActivity{
                 b.putSerializable("AUDIO_BOOK", o.get(0));
                 frag.setArguments(b);
 
+                //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                 fragmentTransaction.add(R.id.fragment_container, frag);
+                fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
             }
         });

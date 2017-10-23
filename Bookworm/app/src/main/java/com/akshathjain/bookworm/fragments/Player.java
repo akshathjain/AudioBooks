@@ -43,6 +43,7 @@ import com.akshathjain.bookworm.utils.Colors;
 import com.akshathjain.bookworm.utils.TimeConverter;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 
 import java.io.Serializable;
@@ -107,15 +108,15 @@ public class Player extends Fragment implements MusicPlayer, Serializable {
         Glide.with(this)
                 .asBitmap()
                 .load(book.getThumbnailURL())
-                .into(new BitmapImageViewTarget(thumbnail) {
+                .into(new SimpleTarget<Bitmap>() {
                     @Override
-                    public void onResourceReady(Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                        super.onResourceReady(resource, transition);
+                    public void onResourceReady(final Bitmap resource, Transition<? super Bitmap> transition) {
                         Colors.createPaletteAsync(resource, new Palette.PaletteAsyncListener() {
                             @Override
                             public void onGenerated(Palette palette) {
                                 System.out.println("generated palette");
                                 thumbnail.setBackgroundColor(palette.getMutedColor(0));
+                                thumbnail.setImageBitmap(resource);
                             }
                         });
                     }
@@ -130,28 +131,6 @@ public class Player extends Fragment implements MusicPlayer, Serializable {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-
-        inflater.inflate(R.menu.player_menu, menu);
-        Spinner spinner = (Spinner) MenuItemCompat.getActionView(menu.findItem(R.id.playback_speed));
-
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.playback_speeds, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
-        //spinner.setSelection(3);
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                System.out.println(i);
-
-               /* if (Build.VERSION.SDK_INT >= 23)
-                    mediaPlayer.setPlaybackParams(mediaPlayer.getPlaybackParams().setSpeed(2f));*/
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
     }
 
     @Override
@@ -214,11 +193,14 @@ public class Player extends Fragment implements MusicPlayer, Serializable {
             public void onProgressChanged(SeekBar seekBar, int i, boolean fromUser) {
                 currentTime.setText(TimeConverter.format(i));
                 if (fromUser) {
-                    if (mediaPlayer != null) {
-                        playPauseMusic();
-                        mediaPlayer.seekTo(i * 1000);
-                        playPauseMusic();
-                    }
+                    if (!lockControls) {
+                        if (mediaPlayer != null) {
+                            playPauseMusic();
+                            mediaPlayer.seekTo(i * 1000);
+                            playPauseMusic();
+                        }
+                    }else
+                        seekBar.setProgress(0);
                 }
             }
 
