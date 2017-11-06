@@ -1,17 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<!--<RelativeLayout
     android:id="@+id/fragment_container"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.akshathjain.bookworm.activities.MainScreen">
 
-    <!--<Button
+</RelativeLayout>-->
+<com.sothree.slidinguppanel.SlidingUpPanelLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:sothree="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="bottom"
+    tools:context="com.akshathjain.bookworm.activities.MainScreen"
+    sothree:umanoPanelHeight="68dp"
+    sothree:umanoShadowHeight="4dp"
+    sothree:umanoParallaxOffset="10dp"
+    android:id="@+id/sliding_panel">
+
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="OPEN PLAYER"
-        android:onClick="openPlayer"/>-->
+        android:text="hello"/>
 
-</RelativeLayout>
+    <FrameLayout
+        android:clickable="true"
+        android:id="@+id/player_container"
+        android:gravity="top"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+
+</com.sothree.slidinguppanel.SlidingUpPanelLayout>

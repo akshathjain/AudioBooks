@@ -1,23 +1,31 @@
 package com.akshathjain.bookworm.activities;
 
+import android.support.v4.app.Fragment;
+import android.support.v4.widget.SlidingPaneLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 
 import com.akshathjain.bookworm.generic.AudioBook;
 import com.akshathjain.bookworm.fragments.Player;
 import com.akshathjain.bookworm.R;
+import com.akshathjain.bookworm.interfaces.LayoutFinished;
 import com.akshathjain.bookworm.interfaces.QueryFinished;
 import com.akshathjain.bookworm.async.LibrivoxRetriever;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.util.ArrayList;
 
-public class MainScreen extends AppCompatActivity{
+public class MainScreen extends AppCompatActivity {
+    private SlidingUpPanelLayout slidePanel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_screen);
         openPlayer();
+
+        slidePanel = findViewById(R.id.sliding_panel);
     }
 
     public void openPlayer() {
@@ -32,13 +40,20 @@ public class MainScreen extends AppCompatActivity{
                 frag.setArguments(b);
 
                 //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-                fragmentTransaction.add(R.id.fragment_container, frag);
+                fragmentTransaction.add(R.id.player_container, frag);
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
+
+                frag.addOnLayoutFinished(new LayoutFinished() {
+                    @Override
+                    public void onLayoutFinished(View v) {
+                        slidePanel.setDragView(v);
+                    }
+                });
             }
         });
-        retriever.execute("https://librivox.org/api/feed/audiobooks/?title=^moby%20dick&format=json&extended=1");
+        retriever.execute("https://librivox.org/api/feed/audiobooks/?title=^pride%20and%20prejudice&format=json&extended=1");
     }
 
-
 }
+
