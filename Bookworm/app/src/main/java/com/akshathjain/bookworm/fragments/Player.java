@@ -95,6 +95,7 @@ public class Player extends Fragment implements MusicPlayer, Serializable {
         streamGetter.addOnCompleted(new QueryFinished<Void>() {
             @Override
             public void onQueryFinished(Void aVoid) {
+                musicLoadedCallback.onMusicLoaded();
                 playIntent = new Intent(getActivity(), MusicPlayerService.class);
                 getActivity().bindService(playIntent, connection, Context.BIND_AUTO_CREATE);
             }
@@ -321,7 +322,15 @@ public class Player extends Fragment implements MusicPlayer, Serializable {
     }
 
     private LayoutFinished layoutFinishedCallback;
-    public void addOnLayoutFinished(LayoutFinished callback){
+    public void addOnLayoutFinished(LayoutFinished callback) {
         layoutFinishedCallback = callback;
+    }
+
+    private MusicLoaded musicLoadedCallback;
+    public void addOnMusicLoaded(MusicLoaded callback) {
+        this.musicLoadedCallback = callback;
+    }
+    public interface MusicLoaded {
+        void onMusicLoaded();
     }
 }

@@ -1,10 +1,9 @@
 package com.akshathjain.bookworm.activities;
 
-import android.support.v4.app.Fragment;
-import android.support.v4.widget.SlidingPaneLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.FrameLayout;
 
 import com.akshathjain.bookworm.generic.AudioBook;
 import com.akshathjain.bookworm.fragments.Player;
@@ -18,6 +17,7 @@ import java.util.ArrayList;
 
 public class MainScreen extends AppCompatActivity {
     private SlidingUpPanelLayout slidePanel;
+    private FrameLayout musicPlayerContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +26,9 @@ public class MainScreen extends AppCompatActivity {
         openPlayer();
 
         slidePanel = findViewById(R.id.sliding_panel);
+        musicPlayerContainer = findViewById(R.id.player_container);
+        musicPlayerContainer.setVisibility(View.INVISIBLE); //set invisible until music is loaded
+        slidePanel.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
     }
 
     public void openPlayer() {
@@ -39,7 +42,6 @@ public class MainScreen extends AppCompatActivity {
                 b.putSerializable("AUDIO_BOOK", o.get(0));
                 frag.setArguments(b);
 
-                //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                 fragmentTransaction.add(R.id.player_container, frag);
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
@@ -48,6 +50,13 @@ public class MainScreen extends AppCompatActivity {
                     @Override
                     public void onLayoutFinished(View v) {
                         slidePanel.setDragView(v);
+                    }
+                });
+
+                frag.addOnMusicLoaded(new Player.MusicLoaded() {
+                    @Override
+                    public void onMusicLoaded() {
+                        slidePanel.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
                     }
                 });
             }
