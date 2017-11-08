@@ -1,7 +1,11 @@
 package com.akshathjain.bookworm.activities;
 
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.PagerAdapter;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.FrameLayout;
 
@@ -18,11 +22,18 @@ import java.util.ArrayList;
 public class MainScreen extends AppCompatActivity {
     private SlidingUpPanelLayout slidePanel;
     private FrameLayout musicPlayerContainer;
+    private ActionBar actionBar;
+
+    //tabs
+    public final String[] TAB_NAMES = {"Library", "Explore"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_screen);
+        setSupportActionBar((Toolbar)findViewById(R.id.toolbar));
+        actionBar = getSupportActionBar();
+
         openPlayer();
 
         slidePanel = findViewById(R.id.sliding_panel);
@@ -65,4 +76,3 @@ public class MainScreen extends AppCompatActivity {
     }
 
 }
-
