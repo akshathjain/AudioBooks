@@ -9,10 +9,10 @@
     sothree:umanoPanelHeight="68dp"
     sothree:umanoShadowHeight="4dp">
 
-    <fragment
+    <FrameLayout
+        android:id="@+id/explorer_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:name="com.akshathjain.bookworm.PrimaryView"/>
+        android:layout_height="match_parent"/>
 
     <FrameLayout
         android:id="@+id/player_container"

@@ -333,4 +333,8 @@ public class Player extends Fragment implements MusicPlayer, Serializable {
     public interface MusicLoaded {
         void onMusicLoaded();
     }
+
+    public interface PlayerControls{
+        void openPlayer();
+    }
 }

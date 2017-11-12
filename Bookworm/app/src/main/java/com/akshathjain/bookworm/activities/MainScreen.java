@@ -1,14 +1,12 @@
 package com.akshathjain.bookworm.activities;
 
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.PagerAdapter;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.FrameLayout;
 
+import com.akshathjain.bookworm.fragments.Explorer;
 import com.akshathjain.bookworm.generic.AudioBook;
 import com.akshathjain.bookworm.fragments.Player;
 import com.akshathjain.bookworm.R;
@@ -17,29 +15,34 @@ import com.akshathjain.bookworm.interfaces.QueryFinished;
 import com.akshathjain.bookworm.async.LibrivoxRetriever;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class MainScreen extends AppCompatActivity {
-    private SlidingUpPanelLayout slidePanel;
-    private FrameLayout musicPlayerContainer;
-    private ActionBar actionBar;
-
-    //tabs
-    public final String[] TAB_NAMES = {"Library", "Explore"};
+public class MainScreen extends AppCompatActivity implements Player.PlayerControls, Serializable {
+    private SlidingUpPanelLayout layout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_screen);
         setSupportActionBar((Toolbar)findViewById(R.id.toolbar));
-        actionBar = getSupportActionBar();
 
+        layout = findViewById(R.id.sliding_panel);
+        layout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
+
+        addExplorer();
         openPlayer();
+    }
 
-        slidePanel = findViewById(R.id.sliding_panel);
-        musicPlayerContainer = findViewById(R.id.player_container);
-        musicPlayerContainer.setVisibility(View.INVISIBLE); //set invisible until music is loaded
-        slidePanel.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
+    public void addExplorer(){
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        Explorer frag = new Explorer();
+        Bundle b = new Bundle();
+        b.putSerializable("PlayerControls", this);
+        frag.setArguments(b);
+
+        fragmentTransaction.add(R.id.explorer_container, frag);
+        fragmentTransaction.commit();
     }
 
     public void openPlayer() {
@@ -60,14 +63,14 @@ public class MainScreen extends AppCompatActivity {
                 frag.addOnLayoutFinished(new LayoutFinished() {
                     @Override
                     public void onLayoutFinished(View v) {
-                        slidePanel.setDragView(v);
+                        layout.setDragView(v);
                     }
                 });
 
                 frag.addOnMusicLoaded(new Player.MusicLoaded() {
                     @Override
                     public void onMusicLoaded() {
-                        slidePanel.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
+                        layout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
                     }
                 });
             }
