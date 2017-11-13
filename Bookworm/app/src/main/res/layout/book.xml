@@ -23,7 +23,7 @@
             android:paddingBottom="2dp"
             android:paddingLeft="4dp"
             android:paddingRight="4dp"
-            android:paddingTop="2dp"
+            android:paddingTop="4dp"
             android:text="Title"
             android:textSize="14sp" />
 
@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:gravity="center"
-            android:paddingBottom="2dp"
+            android:paddingBottom="4dp"
             android:paddingLeft="4dp"
             android:paddingRight="4dp"
             android:paddingTop="2dp"

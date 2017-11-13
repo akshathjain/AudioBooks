@@ -97,7 +97,6 @@ public class SearchResult extends AppCompatActivity {
 
             public ViewHolder(View itemView) {
                 super(itemView);
-
                 thumbnailView = itemView.findViewById(R.id.book_thumbnail);
                 titleView = itemView.findViewById(R.id.book_title);
                 authorView = itemView.findViewById(R.id.book_author);
