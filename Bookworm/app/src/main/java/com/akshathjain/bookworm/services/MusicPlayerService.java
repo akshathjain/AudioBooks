@@ -4,6 +4,8 @@
 
 package com.akshathjain.bookworm.services;
 
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.media.AudioManager;
@@ -12,7 +14,9 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NotificationCompat;
 
+import com.akshathjain.bookworm.R;
 import com.akshathjain.bookworm.interfaces.MusicPlayer;
 
 

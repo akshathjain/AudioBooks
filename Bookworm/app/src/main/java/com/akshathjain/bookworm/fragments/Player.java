@@ -19,6 +19,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.graphics.Palette;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -56,7 +57,10 @@ public class Player extends Fragment implements MusicPlayer, Serializable {
     private TextView title;
     private TextView subtitle;
     private TextView author;
+
+    private Bitmap thumbnailBitmap;
     private ImageView thumbnail;
+
     private TextView currentTime;
     private TextView totalTime;
     private boolean isMusicPlaying = false;
@@ -111,6 +115,7 @@ public class Player extends Fragment implements MusicPlayer, Serializable {
                 .into(new SimpleTarget<Bitmap>() {
                     @Override
                     public void onResourceReady(final Bitmap resource, Transition<? super Bitmap> transition) {
+                        thumbnailBitmap = resource;
                         Colors.createPaletteAsync(resource, new Palette.PaletteAsyncListener() {
                             @Override
                             public void onGenerated(Palette palette) {
@@ -222,15 +227,23 @@ public class Player extends Fragment implements MusicPlayer, Serializable {
                     PendingIntent pendInt = PendingIntent.getActivity(getActivity(), 0,
                             notIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-                    Notification.Builder builder = new Notification.Builder(getActivity());
+                    //display notification
+                    PendingIntent prevTrack = null;
+                    PendingIntent playPause = null;
+                    PendingIntent nextTrack = null;
+                    Notification notification = new NotificationCompat.Builder(getActivity(), "com.akshathjain.bookworm")
+                            .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+                            .setSmallIcon(R.drawable.ic_list_white_24dp)
+                            .addAction(R.drawable.ic_skip_previous_black_24dp, "Previous", prevTrack)
+                            .addAction(R.drawable.ic_pause_black_24dp, "Pause", playPause)
+                            .addAction(R.drawable.ic_skip_next_black_24dp, "Next", nextTrack)
+                            .setStyle(new android.support.v4.media.app.NotificationCompat.MediaStyle())
+                            .setContentTitle(book.getTitle())
+                            .setContentText(book.getCurrentChapter().getTitle())
+                            .setLargeIcon(thumbnailBitmap)
+                            .build();
 
-                    builder.setContentIntent(pendInt)
-                            .setTicker("Playing")
-                            .setOngoing(true)
-                            .setContentTitle("Playing")
-                            .setContentText("Hello World");
-                    Notification not = builder.build();
-                    service.startForeground(6969696, not);
+                    service.startForeground(6969696, notification);
                 }
             }, new MediaPlayer.OnCompletionListener() {
                 @Override
@@ -322,19 +335,22 @@ public class Player extends Fragment implements MusicPlayer, Serializable {
     }
 
     private LayoutFinished layoutFinishedCallback;
+
     public void addOnLayoutFinished(LayoutFinished callback) {
         layoutFinishedCallback = callback;
     }
 
     private MusicLoaded musicLoadedCallback;
+
     public void addOnMusicLoaded(MusicLoaded callback) {
         this.musicLoadedCallback = callback;
     }
+
     public interface MusicLoaded {
         void onMusicLoaded();
     }
 
-    public interface PlayerControls{
+    public interface PlayerControls {
         void openPlayer();
     }
 }

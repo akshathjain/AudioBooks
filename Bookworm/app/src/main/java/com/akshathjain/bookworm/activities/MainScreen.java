@@ -10,6 +10,7 @@ import com.akshathjain.bookworm.fragments.Explorer;
 import com.akshathjain.bookworm.generic.AudioBook;
 import com.akshathjain.bookworm.fragments.Player;
 import com.akshathjain.bookworm.R;
+import com.akshathjain.bookworm.generic.SlidingLayout;
 import com.akshathjain.bookworm.interfaces.LayoutFinished;
 import com.akshathjain.bookworm.interfaces.QueryFinished;
 import com.akshathjain.bookworm.async.LibrivoxRetriever;
@@ -19,7 +20,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class MainScreen extends AppCompatActivity implements Player.PlayerControls, Serializable {
-    private SlidingUpPanelLayout layout;
+    private SlidingLayout layout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

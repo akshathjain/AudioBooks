@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.sothree.slidinguppanel.SlidingUpPanelLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.akshathjain.bookworm.generic.SlidingLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:sothree="http://schemas.android.com/apk/res-auto"
     android:id="@+id/sliding_panel"
     android:layout_width="match_parent"
@@ -21,6 +21,6 @@
         android:clickable="true"
         android:gravity="top" />
 
-</com.sothree.slidinguppanel.SlidingUpPanelLayout>
+</com.akshathjain.bookworm.generic.SlidingLayout>
 
 
