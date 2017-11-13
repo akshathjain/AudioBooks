@@ -32,7 +32,6 @@ public class MainScreen extends AppCompatActivity implements Player.PlayerContro
         layout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
 
         addExplorer();
-        openPlayer();
     }
 
     public void addExplorer(){
