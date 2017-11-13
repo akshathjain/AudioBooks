@@ -40,8 +40,6 @@ public class SearchResult extends AppCompatActivity {
         GridLayoutManager layoutManager = new GridLayoutManager(this, 3);
         resultView.setLayoutManager(layoutManager);
 
-        System.out.println(generateSearchString(args.getStringExtra("query")));
-
         //query database and get search results
         LibrivoxRetriever retriever = new LibrivoxRetriever();
         retriever.addOnCompleted(new QueryFinished<ArrayList<AudioBook>>() {
@@ -59,9 +57,9 @@ public class SearchResult extends AppCompatActivity {
         String begin = "https://librivox.org/api/feed/audiobooks/?title=^";
         String end = "&format=json&extended=1";
         String[] split = s.split(" ");
-        String mid = "";
-        for(int i = 0; i < split.length - 1; i++)
-            mid += split[i] + "%20";
+        String mid = split[0];
+        for(int i = 1; i < split.length; i++)
+            mid += "%20" + split[i];
         return begin + mid + end;
     }
 
