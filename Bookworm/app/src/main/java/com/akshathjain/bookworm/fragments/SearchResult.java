@@ -26,19 +26,19 @@ import java.util.ArrayList;
 
 public class SearchResult extends Fragment {
     private RecyclerView resultView;
+    private Toolbar toolbar;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.fragment_search_result, container, false);
 
-        Toolbar toolbar = layout.findViewById(R.id.toolbar);
+        toolbar = layout.findViewById(R.id.toolbar);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
 
         Bundle args = getArguments();
 
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(args.getString("query"));
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         resultView = layout.findViewById(R.id.search_result_view);
         GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 3);
@@ -71,11 +71,17 @@ public class SearchResult extends Fragment {
         return begin + mid + end;
     }
 
-    private OnBackPressed backCallback;
     interface OnBackPressed{
         void backPressed();
     }
-    public void addOnBackPressedListener(OnBackPressed callback){
+    public void addOnBackPressedListener(final OnBackPressed callback){
+        ImageView backButton = toolbar.findViewById(R.id.fragment_search_back_button);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                callback.backPressed();
+            }
+        });
     }
 
     class GridAdapter extends RecyclerView.Adapter<GridAdapter.ViewHolder> {

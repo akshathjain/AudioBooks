@@ -18,6 +18,7 @@ import java.io.Serializable;
 public class Explorer extends Fragment implements Serializable{
     private Player.PlayerControls playerControls;
     private SearchView searchView;
+    private FragmentManager fm;
 
     @Nullable
     @Override
@@ -26,6 +27,8 @@ public class Explorer extends Fragment implements Serializable{
 
         Toolbar toolbar = layout.findViewById(R.id.toolbar);
         toolbar.setTitle("Bookworm");
+
+        fm = getActivity().getSupportFragmentManager();
 
         searchView = layout.findViewById(R.id.search_icon);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -36,10 +39,16 @@ public class Explorer extends Fragment implements Serializable{
                 Bundle b = new Bundle();
                 b.putString("query", query);
 
-                FragmentManager fm = getActivity().getSupportFragmentManager();
                 searchView = new SearchResult();
                 searchView.setArguments(b);
                 fm.beginTransaction().add(R.id.explorer_container, searchView).commit();
+
+                searchView.addOnBackPressedListener(new SearchResult.OnBackPressed() {
+                    @Override
+                    public void backPressed() {
+                        fm.beginTransaction().remove(searchView).commit();
+                    }
+                });
 
                 return false;
             }
