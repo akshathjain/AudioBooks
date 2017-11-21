@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -11,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.akshathjain.bookworm.R;
-import com.akshathjain.bookworm.activities.SearchResult;
 
 import java.io.Serializable;
 
@@ -29,11 +29,17 @@ public class Explorer extends Fragment implements Serializable{
 
         searchView = layout.findViewById(R.id.search_icon);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            private SearchResult searchView;
+
             @Override
             public boolean onQueryTextSubmit(String query) {
-                Intent intent = new Intent(getActivity(), SearchResult.class);
-                intent.putExtra("query", query);
-                startActivity(intent);
+                Bundle b = new Bundle();
+                b.putString("query", query);
+
+                FragmentManager fm = getActivity().getSupportFragmentManager();
+                searchView = new SearchResult();
+                searchView.setArguments(b);
+                fm.beginTransaction().add(R.id.explorer_container, searchView).commit();
 
                 return false;
             }

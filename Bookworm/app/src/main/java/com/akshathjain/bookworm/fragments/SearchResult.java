@@ -1,9 +1,11 @@
-package com.akshathjain.bookworm.activities;
+package com.akshathjain.bookworm.fragments;
 
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,23 +24,24 @@ import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 
-public class SearchResult extends AppCompatActivity {
+public class SearchResult extends Fragment {
     private RecyclerView resultView;
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_search_result);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View layout = inflater.inflate(R.layout.fragment_search_result, container, false);
 
-        Intent args = getIntent();
+        Toolbar toolbar = layout.findViewById(R.id.toolbar);
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
 
-        getSupportActionBar().setTitle(args.getStringExtra("query"));
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Bundle args = getArguments();
 
-        resultView = findViewById(R.id.search_result_view);
-        GridLayoutManager layoutManager = new GridLayoutManager(this, 3);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(args.getString("query"));
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        resultView = layout.findViewById(R.id.search_result_view);
+        GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 3);
         resultView.setLayoutManager(layoutManager);
 
         //query database and get search results
@@ -47,14 +50,15 @@ public class SearchResult extends AppCompatActivity {
             @Override
             public void onQueryFinished(ArrayList<AudioBook> o) {
                 if (o.size() > 0) {
-                    GridAdapter mAdapter = new GridAdapter(SearchResult.this, o);
+                    GridAdapter mAdapter = new GridAdapter(getActivity(), o);
                     resultView.addItemDecoration(new CustomItemDecoration(getResources().getDimensionPixelSize(R.dimen.book_spacing)));
                     resultView.setAdapter(mAdapter);
                 }
             }
         });
-        retriever.execute(generateSearchString(args.getStringExtra("query")));
+        retriever.execute(generateSearchString(args.getString("query")));
 
+        return layout;
     }
 
     private String generateSearchString(String s) {
@@ -65,6 +69,13 @@ public class SearchResult extends AppCompatActivity {
         for (int i = 1; i < split.length; i++)
             mid += "%20" + split[i];
         return begin + mid + end;
+    }
+
+    private OnBackPressed backCallback;
+    interface OnBackPressed{
+        void backPressed();
+    }
+    public void addOnBackPressedListener(OnBackPressed callback){
     }
 
     class GridAdapter extends RecyclerView.Adapter<GridAdapter.ViewHolder> {
@@ -123,9 +134,9 @@ class CustomItemDecoration extends RecyclerView.ItemDecoration {
         int span = manager.getSpanCount();
         int pos = parent.getChildLayoutPosition(view) % span;
 
-        outRect.top = parent.getChildLayoutPosition(view) < span ? (int)(space * 1.5) : 0;
+        outRect.top = parent.getChildLayoutPosition(view) < span ? (int) (space * 1.5) : 0;
         outRect.left = pos == 0 ? space : space / 2;
         outRect.right = pos == span - 1 ? space : space / 2;
-        outRect.bottom = (int)(space * 1.5);
+        outRect.bottom = (int) (space * 1.5);
     }
 }

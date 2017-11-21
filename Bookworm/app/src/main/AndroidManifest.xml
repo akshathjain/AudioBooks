@@ -23,15 +23,6 @@
         </activity>
 
         <service android:name=".services.MusicPlayerService" />
-
-        <activity
-            android:name=".activities.SearchResult"
-            android:theme="@style/AppTheme"
-            android:parentActivityName="com.akshathjain.bookworm.activities.MainScreen">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.akshathjain.bookworm.activities.MainScreen"/>
-        </activity>
     </application>
 
 </manifest>
